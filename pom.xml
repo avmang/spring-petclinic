@@ -261,7 +261,7 @@
               <goal>check</goal>
             </goals>
             <!-- changed from validate to none -->
-            <phase>none</phase>
+            <phase>validate</phase>
             <configuration>
               <configLocation>src/checkstyle/nohttp-checkstyle.xml</configLocation> 
               <sourceDirectories>${basedir}</sourceDirectories>

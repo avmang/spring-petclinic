@@ -3,22 +3,27 @@ pipeline {
 
     environment {
         REPO_MAIN = "main"
+        REPO_MR = "mr"
         IMAGE_NAME = "spring-petclinic"
     }
 
     stages {
-        stage ('Checkout') {
+        stage('Checkout') {
             when {
-                expression { env.CHANGE_ID != null }
+                expression {
+                    return env.BRANCH_NAME?.startsWith('other-')
+                }
             }
             steps {
                 checkout scm
             }
         }
 
-        stage ('Checkstyle') {
+        stage('Checkstyle') {
             when {
-                expression { env.CHANGE_ID != null }
+                expression {
+                    return env.BRANCH_NAME?.startsWith('other-')
+                }
             }
             steps {
                 script {
@@ -32,9 +37,11 @@ pipeline {
             }
         }
 
-        stage ('Test') {
+        stage('Test') {
             when {
-                expression { env.CHANGE_ID != null }
+                expression {
+                    return env.BRANCH_NAME?.startsWith('other-')
+                }
             }
             steps {
                 script {
@@ -43,9 +50,11 @@ pipeline {
             }
         }
 
-        stage ('Build') {
+        stage('Build') {
             when {
-                expression { env.CHANGE_ID != null }
+                expression {
+                    return env.BRANCH_NAME?.startsWith('other-')
+                }
             }
             steps {
                 script {
@@ -54,9 +63,11 @@ pipeline {
             }
         }
 
-        stage ('Docker Image for MR') {
+        stage('Docker Image for MR') {
             when {
-                expression { env.CHANGE_ID != null }
+                expression {
+                    return env.BRANCH_NAME?.startsWith('other-')
+                }
             }
             steps {
                 script {
@@ -69,18 +80,18 @@ pipeline {
                         sh """
                         echo "${DOCKER_CREDS_PSW}" | docker login -u "${DOCKER_CREDS_USR}" --password-stdin
                         docker build -t ${IMAGE_NAME}:${shortCommit} .
-                        docker tag ${IMAGE_NAME}:${shortCommit} ${DOCKER_HUB_USR}/mr:${shortCommit}
-                        docker push ${DOCKER_HUB_USR}/mr:${shortCommit}
+                        docker tag ${IMAGE_NAME}:${shortCommit} ${DOCKER_HUB_USR}/${REPO_MR}:${shortCommit}
+                        docker push ${DOCKER_HUB_USR}/${REPO_MR}:${shortCommit}
                         """
                     }
                 }
             }
         }
 
-        stage ('Docker Image for main branch') {
+        stage('Docker Image for main branch') {
             when {
                 expression {
-                    env.BRANCH_NAME == 'main' || env.GIT_BRANCH?.contains('main')
+                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME?.contains('main')
                 }
             }
             steps {
@@ -94,8 +105,8 @@ pipeline {
                         sh """
                         echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USR}" --password-stdin
                         docker build -t ${IMAGE_NAME}:${shortCommit} .
-                        docker tag ${IMAGE_NAME}:${shortCommit} ${DOCKER_HUB_USR}/main:${shortCommit}
-                        docker push ${DOCKER_HUB_USR}/main:${shortCommit}
+                        docker tag ${IMAGE_NAME}:${shortCommit} ${DOCKER_HUB_USR}/${REPO_MAIN}:${shortCommit}
+                        docker push ${DOCKER_HUB_USR}/${REPO_MAIN}:${shortCommit}
                         """
                     }
                 }
