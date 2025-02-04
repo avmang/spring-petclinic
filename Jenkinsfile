@@ -78,7 +78,7 @@ pipeline {
                         passwordVariable: 'DOCKER_HUB_TOKEN'
                     )]) {
                         sh """
-                        echo "${DOCKER_HUB_PSW}" | docker login -u "${DOCKER_HUB_USR}" --password-stdin
+                        echo "${DOCKER_HUB_TOKEN}" | docker login -u "${DOCKER_HUB_USR}" --password-stdin
                         docker build -t ${IMAGE_NAME}:${shortCommit} .
                         docker tag ${IMAGE_NAME}:${shortCommit} ${DOCKER_HUB_USR}/${REPO_MR}:${shortCommit}
                         docker push ${DOCKER_HUB_USR}/${REPO_MR}:${shortCommit}
