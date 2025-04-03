@@ -27,6 +27,6 @@ EXPOSE 8080
 
 EXPOSE 10254
 
-CMD java -javaagent:/opt/jmx_exporter/$JAR=10254:/opt/jmx_exporter/config.yaml -jar app.jar
+CMD java -javaagent:/opt/jmx_exporter/$JAR=10254:/opt/jmx_exporter/config.yaml -jar app.jar app.log
 
 
