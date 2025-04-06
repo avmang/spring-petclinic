@@ -4,6 +4,8 @@ services:
     ports:
     - 8080:8080
     - 10254:10254
+    volumes:
+      - logs:/build/logs
   mysql:
     image: mysql:9.1
     ports:
@@ -42,7 +44,7 @@ services:
           type: loki
           access: proxy 
           orgId: 1
-          url: http://loki:3100
+          url: http://spr_new-loki-1:3100
           basicAuth: false
           isDefault: true
           version: 1
@@ -73,9 +75,9 @@ services:
   promtail:
     image: grafana/promtail:latest
     volumes:
-      - /var/log:/var/log
       - ./logging/config.yml:/etc/promtail/config.yml
-      - ./positions.yaml:/var/lib/promtail/positions.yaml
+      - promtail-positions:/var/lib/promtail 
+      - logs:/var/log
     command: -config.file=/etc/promtail/config.yml
     ports:
       - "9080:9080"
@@ -84,3 +86,5 @@ services:
 
 volumes:
   grafana-storage: {}
+  logs: 
+  promtail-positions:

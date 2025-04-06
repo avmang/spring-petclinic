@@ -2,17 +2,17 @@ server:
   http_listen_port: 9080
   grpc_listen_port: 0
 positions:
-  filename: tmp/positions.yaml
+  filename: /var/lib/promtail/positions.yaml
 clients:
-  - url: http://localhost:3100/loki/api/v1/push
+  - url: http://loki:3100/loki/api/v1/push
 scrape_configs:
 - job_name: spring-petclinic
   decompression:
-    enabled: true
-    initial_delay: 10s
+    enabled: false
+    initial_delay: 4s
   static_configs:
   - targets:
       - spr_new-app-1
     labels:
       job: varlogs
-      __path__: app.log
+      __path__: /var/log/app.log
