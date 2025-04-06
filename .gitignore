@@ -49,3 +49,7 @@ out/
 _site/
 *.css
 !petclinic.css
+
+### Terraform ###
+.terraform*
+terraform/terraform.tfstate* 
