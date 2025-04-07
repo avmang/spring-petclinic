@@ -53,3 +53,4 @@ _site/
 ### Terraform ###
 .terraform*
 terraform/terraform.tfstate* 
+*.DS_Store

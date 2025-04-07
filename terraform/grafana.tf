@@ -8,7 +8,7 @@ terraform {
 }
 provider "grafana" {
    url   = "http://localhost:3000"
-   auth  =  "your-generated-token"
+   auth  =  
 }
 
 # resource "grafana_service_account" "admin" {
@@ -25,14 +25,20 @@ provider "grafana" {
 resource "grafana_data_source" "prometheus" {
   type                = "prometheus"
   name                = "spring-petclinic"
-  url                 = "https://prometheus:9090"
+  url                 = "http://prometheus:9090"
 }
 
 resource "grafana_folder" "jmx" {
   title = "JMX Exporter Folder"
   uid   = "folder-jmx"
 }
+
 resource "grafana_dashboard" "jmx" {
-    folder = grafana_folder.jmx.uid
-    config_json = file("${path.module}/10519_rev2.json")
+   folder = grafana_folder.jmx.uid
+   depends_on = [ grafana_data_source.prometheus ]
+   config_json = templatefile("${path.module}/10519_rev2.json",
+      {
+         DATASOURCE = grafana_data_source.prometheus.uid
+      }
+   )
 }
