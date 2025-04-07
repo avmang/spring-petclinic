@@ -12,7 +12,7 @@ scrape_configs:
     initial_delay: 4s
   static_configs:
   - targets:
-      - spr_new-app-1
+      - app
     labels:
       job: varlogs
       __path__: /var/log/app.log
