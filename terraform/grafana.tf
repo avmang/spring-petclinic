@@ -8,7 +8,7 @@ terraform {
 }
 provider "grafana" {
    url   = "http://localhost:3000"
-   auth  =  # your_generated_token
+   auth  =  "your-generated-token"
 }
 
 # resource "grafana_service_account" "admin" {
@@ -25,12 +25,12 @@ provider "grafana" {
 resource "grafana_data_source" "prometheus" {
   type                = "prometheus"
   name                = "spring-petclinic"
-  url                 = "https://spr_new-prometheus-1:9090"
+  url                 = "https://prometheus:9090"
 }
 
 resource "grafana_folder" "jmx" {
-  title = "My Folder"
-  uid   = "my-folder-uid"
+  title = "JMX Exporter Folder"
+  uid   = "folder-jmx"
 }
 resource "grafana_dashboard" "jmx" {
     folder = grafana_folder.jmx.uid
