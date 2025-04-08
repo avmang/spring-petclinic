@@ -8,19 +8,8 @@ terraform {
 }
 provider "grafana" {
    url   = "http://localhost:3000"
-   auth  =  
+   auth  =  var.token
 }
-
-# resource "grafana_service_account" "admin" {
-#   name        = "terraform-admin sa"
-#   role        = "Admin"
-#   is_disabled = false
-# }
-
-# resource "grafana_service_account_token" "admin-token" {
-#   name               = "terraform-token"
-#   service_account_id = grafana_service_account.admin.id
-# }
 
 resource "grafana_data_source" "prometheus" {
   type                = "prometheus"
@@ -33,12 +22,11 @@ resource "grafana_folder" "jmx" {
   uid   = "folder-jmx"
 }
 
-resource "grafana_dashboard" "jmx" {
+
+resource "grafana_dashboard" "jmx_exporter" {
    folder = grafana_folder.jmx.uid
    depends_on = [ grafana_data_source.prometheus ]
-   config_json = templatefile("${path.module}/10519_rev2.json",
-      {
-         DATASOURCE = grafana_data_source.prometheus.uid
-      }
-   )
+   config_json = templatefile("./jmx_exporter_dashboard.json", {
+      DS_PROMETHEUS = grafana_data_source.prometheus.name
+   })
 }
